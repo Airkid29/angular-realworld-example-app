@@ -27,12 +27,17 @@
                 "output": "/assets"
               },
               {
+                "glob": "hero-photo.jpg",
+                "input": "src/assets",
+                "output": "/assets"
+              },
+              {
                 "glob": "_redirects",
                 "input": "src",
                 "output": "/"
               }
             ],
-            "styles": ["realworld/assets/theme/styles.css"],
+            "styles": ["realworld/assets/theme/styles.css", "src/styles.css"],
             "scripts": [],
             "browser": "src/main.ts"
           },

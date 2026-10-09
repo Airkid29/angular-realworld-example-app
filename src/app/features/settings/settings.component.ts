@@ -25,17 +25,16 @@ export default class SettingsComponent implements OnInit {
   user!: User;
   settingsForm = new FormGroup<SettingsForm>({
     image: new FormControl('', { nonNullable: true }),
-    username: new FormControl('', { nonNullable: true }),
+    username: new FormControl('', { validators: [Validators.required], nonNullable: true }),
     bio: new FormControl('', { nonNullable: true }),
-    email: new FormControl('', { nonNullable: true }),
-    password: new FormControl('', {
-      validators: [Validators.required],
-      nonNullable: true,
-    }),
+    email: new FormControl('', { validators: [Validators.required, Validators.email], nonNullable: true }),
+    password: new FormControl('', { nonNullable: true }),
   });
   errors = signal<Errors | null>(null);
   isSubmitting = signal(false);
   destroyRef = inject(DestroyRef);
+  avatarPreview = signal('');
+  avatarError = signal('');
 
   constructor(
     private readonly router: Router,
@@ -50,7 +49,57 @@ export default class SettingsComponent implements OnInit {
         image: user.image ?? '',
         bio: user.bio ?? '',
       });
+      this.avatarPreview.set(user.image ?? '');
     }
+  }
+
+  onAvatarSelected(event: Event): void {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const file = input.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    this.avatarError.set('');
+
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      this.avatarError.set('Choisis une image au format JPG, PNG ou WebP.');
+      input.value = '';
+      return;
+    }
+
+    if (file.size > 300 * 1024) {
+      this.avatarError.set('L’image doit faire 300 Ko maximum.');
+      input.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result !== 'string') {
+        this.avatarError.set('Impossible de lire cette image.');
+        input.value = '';
+        return;
+      }
+
+      this.settingsForm.controls.image.setValue(reader.result);
+      this.avatarPreview.set(reader.result);
+    };
+    reader.onerror = () => {
+      this.avatarError.set('La lecture de l’image a échoué. Réessaie avec un autre fichier.');
+      input.value = '';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeAvatar(): void {
+    this.settingsForm.controls.image.setValue('');
+    this.avatarPreview.set('');
+    this.avatarError.set('');
   }
 
   logout(): void {
@@ -58,6 +107,12 @@ export default class SettingsComponent implements OnInit {
   }
 
   submitForm() {
+    if (this.settingsForm.invalid) {
+      this.settingsForm.markAllAsTouched();
+      return;
+    }
+
+    this.errors.set(null);
     this.isSubmitting.set(true);
 
     const payload = { ...this.settingsForm.value };

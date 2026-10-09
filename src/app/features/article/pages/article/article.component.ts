@@ -48,6 +48,7 @@ export default class ArticleComponent implements OnInit {
   comments = signal<Comment[]>([]);
   canModify = signal(false);
   errors = signal<Errors | null>(null);
+  shareMessage = signal('');
 
   commentControl = new FormControl<string>('', { nonNullable: true });
   commentFormErrors = signal<Errors | null>(null);
@@ -157,5 +158,19 @@ export default class ArticleComponent implements OnInit {
           this.deleteCommentErrors.set(errors);
         },
       });
+  }
+
+  async copyArticleLink(): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      this.shareMessage.set('Lien copié !');
+    } catch {
+      this.shareMessage.set('Copie indisponible : copie le lien depuis la barre d’adresse.');
+    }
+  }
+
+  readingTime(): number {
+    const wordCount = this.article()?.body.trim().split(/\s+/).filter(Boolean).length ?? 0;
+    return Math.max(1, Math.ceil(wordCount / 200));
   }
 }

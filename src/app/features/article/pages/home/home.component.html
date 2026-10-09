@@ -1,15 +1,41 @@
 <div class="home-page">
-  <div class="banner" *ifAuthenticated="false">
-    <div class="container">
-      <h1 class="logo-font"><img src="assets/conduit-logo.svg" alt="Conduit" class="banner-logo" /></h1>
-      <p>
-        This is the
-        <a href="https://github.com/realworld-apps/angular-realworld-example-app">Angular frontend</a> demo from the
-        <a href="https://github.com/realworld-apps/realworld">Realworld</a> project.<br />
-        This demo is connected to a demo backend that enforces session isolation.
-      </p>
+  <section class="home-hero" *ifAuthenticated="false">
+    <div class="container home-hero__inner">
+      <div class="home-hero__copy">
+        <span class="home-hero__eyebrow">THE COMMUNITY FOR READERS & CREATORS</span>
+
+        <h1>
+          Des idées à partager.<br />
+          Des histoires à découvrir.
+        </h1>
+
+        <p>Rejoins une communauté de passionnés et découvre des articles sur les sujets qui t’inspirent.</p>
+
+        <div class="home-hero__actions">
+          <a class="btn btn-primary" routerLink="/register">Créer mon compte</a>
+          <a class="home-hero__secondary" routerLink="/login">J’ai déjà un compte →</a>
+        </div>
+
+        <div class="home-hero__note">
+          <span class="home-hero__dot"></span>
+          Une communauté ouverte à toutes les idées
+        </div>
+      </div>
+
+      <div class="home-hero__visual">
+        <img
+          class="home-hero__photo"
+          src="/assets/hero-photo.jpg"
+          alt="Une plume posée sur un carnet rempli d’écriture"
+        />
+        <span class="home-hero__floating home-hero__floating--one">Curiosité</span>
+        <span class="home-hero__floating home-hero__floating--two">Créativité</span>
+        <a class="home-hero__photo-credit" href="https://unsplash.com/" target="_blank" rel="noopener noreferrer">
+          Photo via Unsplash
+        </a>
+      </div>
     </div>
-  </div>
+  </section>
 
   <div class="container page">
     <div class="row">
@@ -26,6 +52,7 @@
                 Your Feed
               </a>
             </li>
+
             <li class="nav-item">
               <a
                 class="nav-link"
@@ -37,6 +64,7 @@
                 Global Feed
               </a>
             </li>
+
             <li class="nav-item" [hidden]="!listConfig().filters.tag">
               <a class="nav-link active"> <i class="ion-pound"></i> {{ listConfig().filters.tag }} </a>
             </li>
@@ -65,7 +93,6 @@
           </div>
 
           <div [hidden]="tagsLoaded()">Loading tags...</div>
-
           <div [hidden]="!tagsLoaded() || tags.length > 0">No tags are here... yet.</div>
         </div>
       </div>

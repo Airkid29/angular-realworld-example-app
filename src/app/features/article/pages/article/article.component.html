@@ -39,6 +39,12 @@
             </span>
           }
         </app-article-meta>
+        <div class="article-share">
+          <button class="btn btn-sm btn-outline-secondary" type="button" (click)="copyArticleLink()">
+            Copier le lien
+          </button>
+          <span aria-live="polite">{{ shareMessage() }}</span>
+        </div>
       </div>
     </div>
 

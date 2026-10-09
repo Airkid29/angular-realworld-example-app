@@ -1,72 +1,93 @@
 <div class="settings-page">
   <div class="container page">
     <div class="row">
-      <div class="col-md-6 offset-md-3 col-xs-12">
-        <h1 class="text-xs-center">Your Settings</h1>
+      <div class="col-md-8 offset-md-2 col-xs-12">
+        <section class="settings-card">
+          <header class="settings-heading">
+            <span class="settings-eyebrow">TON ESPACE</span>
+            <h1>Paramètres du profil</h1>
+            <p>Personnalise les informations que les autres membres voient sur ton profil.</p>
+          </header>
 
-        <app-list-errors [errors]="errors()" />
+          <app-list-errors [errors]="errors()" />
 
-        <form [formGroup]="settingsForm" (ngSubmit)="submitForm()">
-          <fieldset [disabled]="isSubmitting()">
-            <fieldset class="form-group">
+          <form [formGroup]="settingsForm" (ngSubmit)="submitForm()">
+            <fieldset [disabled]="isSubmitting()">
+              <div class="settings-photo">
+                <img
+                  class="settings-avatar"
+                  [src]="avatarPreview() || '/assets/default-avatar.svg'"
+                  alt="Aperçu de la photo de profil"
+                />
+                <div class="settings-photo__content">
+                  <label for="profile-image">Photo de profil</label>
+                  <p>JPG, PNG ou WebP · 300 Ko maximum</p>
+                  <input
+                    id="profile-image"
+                    class="form-control"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    (change)="onAvatarSelected($event)"
+                  />
+                  <button class="settings-remove-photo" type="button" (click)="removeAvatar()">Retirer la photo</button>
+                </div>
+              </div>
+
+              @if (avatarError()) {
+                <p class="settings-image-error" role="alert">{{ avatarError() }}</p>
+              }
+
+              <label class="settings-label" for="settings-username">Nom d’utilisateur</label>
               <input
-                class="form-control"
+                id="settings-username"
+                class="form-control form-control-lg settings-field"
                 type="text"
-                placeholder="URL of profile picture"
-                formControlName="image"
-                name="image"
-              />
-            </fieldset>
-
-            <fieldset class="form-group">
-              <input
-                class="form-control form-control-lg"
-                type="text"
-                placeholder="Username"
+                placeholder="Nom d’utilisateur"
                 formControlName="username"
                 name="username"
               />
-            </fieldset>
 
-            <fieldset class="form-group">
+              <label class="settings-label" for="settings-bio">À propos de toi</label>
               <textarea
-                class="form-control form-control-lg"
-                rows="8"
-                placeholder="Short bio about you"
+                id="settings-bio"
+                class="form-control form-control-lg settings-field"
+                rows="4"
+                placeholder="Quelques mots pour te présenter"
                 formControlName="bio"
                 name="bio"
-              >
-              </textarea>
-            </fieldset>
+              ></textarea>
 
-            <fieldset class="form-group">
+              <label class="settings-label" for="settings-email">Adresse e-mail</label>
               <input
-                class="form-control form-control-lg"
+                id="settings-email"
+                class="form-control form-control-lg settings-field"
                 type="email"
-                placeholder="Email"
+                placeholder="Adresse e-mail"
                 formControlName="email"
                 name="email"
               />
-            </fieldset>
 
-            <fieldset class="form-group">
+              <label class="settings-label" for="settings-password">Nouveau mot de passe</label>
               <input
+                id="settings-password"
                 class="form-control form-control-lg"
                 type="password"
-                placeholder="New Password"
+                placeholder="Laisse vide pour ne pas le modifier"
                 formControlName="password"
                 name="password"
+                autocomplete="new-password"
               />
+
+              <button class="btn btn-primary settings-submit" type="submit" [disabled]="isSubmitting()">
+                {{ isSubmitting() ? 'Enregistrement…' : 'Enregistrer les modifications' }}
+              </button>
             </fieldset>
+          </form>
 
-            <button class="btn btn-lg btn-primary pull-xs-right" type="submit">Update Settings</button>
-          </fieldset>
-        </form>
+          <hr />
 
-        <!-- Line break for logout button -->
-        <hr />
-
-        <button class="btn btn-outline-danger" (click)="logout()">Or click here to logout.</button>
+          <button class="btn btn-outline-danger" type="button" (click)="logout()">Se déconnecter</button>
+        </section>
       </div>
     </div>
   </div>
